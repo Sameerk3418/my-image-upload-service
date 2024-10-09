@@ -1,0 +1,3 @@
+boto3
+pillow
+pip install -r requirements.txt

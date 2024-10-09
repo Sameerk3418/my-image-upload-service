@@ -1,0 +1,43 @@
+service: image-upload-service
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-1
+
+functions:
+  uploadImage:
+    handler: upload_image.lambda_handler
+    events:
+      - http:
+          path: upload
+          method: post
+          cors: true
+
+  downloadImage:
+    handler: download_image.lambda_handler
+    events:
+      - http:
+          path: images/{imageName}
+          method: get
+          cors: true
+
+  downloadThumbnail:
+    handler: download_thumbnail.lambda_handler
+    events:
+      - http:
+          path: thumbnails/{imageName}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    ThumbnailQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: thumbnailQueue
+
+    ImageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: my-image-upload-bucket
